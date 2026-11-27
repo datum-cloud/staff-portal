@@ -1,4 +1,6 @@
+import { grantOwner, type GrantOwner } from '../lib/quota-grants';
 import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
+import { GrantOwnerLabel } from './grant-owner-label';
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
@@ -13,21 +15,39 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
+import type { ComMiloapisQuotaV1Alpha1ResourceGrant } from '@openapi/quota.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 
 interface QuotaGrantListProps {
-  queryKeyPrefix: string[];
+  /** Start it with the consumer's `quotaQueryKeys…grants.all` so grant changes refresh the table. */
+  queryKeyPrefix: readonly string[];
   fetchFn: (params?: Record<string, unknown>) => Promise<GqlQuotaGrantList>;
   deleteGrantFn: (name: string, namespace: string) => Promise<unknown>;
+  /**
+   * The same grants from the API, whose managedFields tell who owns each, to
+   * lock the ones staff can't remove (platform default, GitOps) (#343).
+   */
+  resourceGrants?: ComMiloapisQuotaV1Alpha1ResourceGrant[];
 }
 
 interface QuotaGrantRow extends QuotaRow {
   grant: GqlQuotaGrant;
   allocation: number;
+  owner?: GrantOwner;
 }
 
-export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: QuotaGrantListProps) {
+/** Grants a controller owns: deleting them here would just be undone. */
+const isLocked = (owner?: GrantOwner): boolean => owner === 'platform' || owner === 'gitops';
+
+const grantKey = (namespace: string, name: string): string => `${namespace}/${name}`;
+
+export function QuotaGrantList({
+  queryKeyPrefix,
+  fetchFn,
+  deleteGrantFn,
+  resourceGrants,
+}: QuotaGrantListProps) {
   const { t } = useLingui();
   const [selectedGrant, setSelectedGrant] = useState<GqlQuotaGrant | null>(null);
 
@@ -38,6 +58,17 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
     staleTime: 60 * 1000,
   });
 
+  const owners = useMemo(
+    () =>
+      new Map(
+        (resourceGrants ?? []).map((grant) => [
+          grantKey(grant.metadata?.namespace ?? '', grant.metadata?.name ?? ''),
+          grantOwner(grant),
+        ])
+      ),
+    [resourceGrants]
+  );
+
   const rows = useMemo<QuotaGrantRow[]>(() => {
     return (tableQuery.data?.items ?? []).flatMap((grant) =>
       grant.allowances.map((allowance) => ({
@@ -47,9 +78,10 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
         percentage: 0,
         allocation: allowance.amount,
         grant,
+        owner: owners.get(grantKey(grant.namespace, grant.name)),
       }))
     );
-  }, [tableQuery.data]);
+  }, [tableQuery.data, owners]);
 
   const groups = useMemo<GroupedTableGroup<QuotaGrantRow>[]>(
     () =>
@@ -88,9 +120,16 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
         accessorFn: (row) => row.grant.name,
         size: 220,
         cell: ({ row }) => (
-          <Text size="sm" textColor="muted" className="truncate" title={row.original.grant.name}>
-            {row.original.grant.name}
-          </Text>
+          <div className="flex min-w-0 flex-col">
+            <Text size="sm" textColor="muted" className="truncate" title={row.original.grant.name}>
+              {row.original.grant.name}
+            </Text>
+            {row.original.owner && (
+              <Text size="xs" textColor="muted" className="opacity-80">
+                <GrantOwnerLabel owner={row.original.owner} />
+              </Text>
+            )}
+          </div>
         ),
       },
       {
@@ -146,7 +185,7 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
           (c) => c.type === 'Active' && c.status === 'False'
         );
         if (isInactive) return true;
-        return row.grant.autoCreated;
+        return row.grant.autoCreated || isLocked(row.owner);
       },
     },
   ];
@@ -163,8 +202,8 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
+          // The route's delete mutation waits for the quota controller, then refreshes.
           await deleteGrantFn(selectedGrant?.name ?? '', selectedGrant?.namespace ?? '');
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           setSelectedGrant(null);
           toast.success(t`Grant deleted successfully`);
         }}

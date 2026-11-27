@@ -1,7 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/usage';
-import { QuotaBucketList } from '@/features/quota';
-import { listOrgQuotaBuckets, orgQuotaGrantCreateMutation } from '@/resources/request/client';
+import { QuotaBucketList, useOrgQuotaLimitChange } from '@/features/quota';
+import { listOrgQuotaBuckets, quotaQueryKeys } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -16,14 +16,16 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 export default function Page() {
   const data = useOrganizationDetailData();
+  const orgName = data.metadata?.name ?? '';
+  const limitChange = useOrgQuotaLimitChange(orgName);
 
   return (
     <QuotaBucketList
-      queryKeyPrefix={['organizations', data.metadata?.name ?? '', 'buckets']}
-      fetchFn={() => listOrgQuotaBuckets(data.metadata?.name ?? '')}
-      createGrantFn={(namespace, payload) =>
-        orgQuotaGrantCreateMutation(data.metadata?.name ?? '', namespace, payload)
-      }
+      queryKeyPrefix={[...quotaQueryKeys.organizations.buckets.all(orgName), 'gql']}
+      fetchFn={() => listOrgQuotaBuckets(orgName)}
+      resourceGrants={limitChange.resourceGrants}
+      grantsError={limitChange.isError}
+      changeLimitFn={limitChange.changeLimit}
     />
   );
 }

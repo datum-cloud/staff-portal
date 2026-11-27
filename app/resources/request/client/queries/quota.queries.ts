@@ -5,6 +5,8 @@ import {
   orgQuotaGrantDeleteMutation,
   orgQuotaGrantListQuery,
   projectQuotaBucketListQuery,
+  projectQuotaGrantCreateMutation,
+  projectQuotaGrantDeleteMutation,
   projectQuotaGrantListQuery,
   resourceRegistrationListQuery,
 } from '../apis/quota.api';
@@ -110,8 +112,7 @@ export const useResourceRegistrationListQuery = (params?: ListQueryParams) => {
 
 // Brief wait before invalidating after a grant create/delete: the
 // AllowanceBucket controller reconciles asynchronously, so an immediate
-// refetch usually comes back with stale state. 1s matches the legacy
-// timing used by QuotaBucketList / QuotaGrantList.
+// refetch usually comes back with stale state.
 const GRANT_RECONCILE_WAIT_MS = 1000;
 
 async function invalidateOrgQuotaState(queryClient: QueryClient, orgName: string) {
@@ -119,6 +120,14 @@ async function invalidateOrgQuotaState(queryClient: QueryClient, orgName: string
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: quotaQueryKeys.organizations.buckets.all(orgName) }),
     queryClient.invalidateQueries({ queryKey: quotaQueryKeys.organizations.grants.all(orgName) }),
+  ]);
+}
+
+async function invalidateProjectQuotaState(queryClient: QueryClient, projectName: string) {
+  await new Promise((resolve) => setTimeout(resolve, GRANT_RECONCILE_WAIT_MS));
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: quotaQueryKeys.projects.buckets.all(projectName) }),
+    queryClient.invalidateQueries({ queryKey: quotaQueryKeys.projects.grants.all(projectName) }),
   ]);
 }
 
@@ -156,6 +165,42 @@ export const useOrgQuotaGrantDeleteMutation = () => {
     }) => orgQuotaGrantDeleteMutation(orgName, name, namespace),
     onSuccess: async (_, variables) => {
       await invalidateOrgQuotaState(queryClient, variables.orgName);
+    },
+  });
+};
+
+export const useProjectQuotaGrantCreateMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      projectName,
+      namespace,
+      payload,
+    }: {
+      projectName: string;
+      namespace: string;
+      payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec'];
+    }) => projectQuotaGrantCreateMutation(projectName, namespace, payload),
+    onSuccess: async (_, variables) => {
+      await invalidateProjectQuotaState(queryClient, variables.projectName);
+    },
+  });
+};
+
+export const useProjectQuotaGrantDeleteMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      projectName,
+      name,
+      namespace,
+    }: {
+      projectName: string;
+      name: string;
+      namespace: string;
+    }) => projectQuotaGrantDeleteMutation(projectName, name, namespace),
+    onSuccess: async (_, variables) => {
+      await invalidateProjectQuotaState(queryClient, variables.projectName);
     },
   });
 };

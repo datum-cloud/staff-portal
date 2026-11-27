@@ -1,4 +1,6 @@
+import { quotaBreakdown, type GrantOwner, type QuotaBreakdown } from '../lib/quota-grants';
 import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
+import { GrantOwnerLabel } from './grant-owner-label';
 import { DialogForm } from '@/components/dialog';
 import { TableCard } from '@/features/milo';
 import { type GqlQuotaBucket, type GqlQuotaBucketList } from '@/resources/gql/quota.gql';
@@ -12,18 +14,41 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
-import { ComMiloapisQuotaV1Alpha1ResourceGrant } from '@openapi/quota.miloapis.com/v1alpha1';
+import type { ComMiloapisQuotaV1Alpha1ResourceGrant } from '@openapi/quota.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import z from 'zod';
 
 interface QuotaBucketListProps {
-  queryKeyPrefix: string[];
+  /** Start it with the consumer's `quotaQueryKeys…buckets.all` so grant changes refresh the table. */
+  queryKeyPrefix: readonly string[];
   fetchFn: (params?: Record<string, unknown>) => Promise<GqlQuotaBucketList>;
-  createGrantFn: (
-    namespace: string,
-    payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
-  ) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrant>;
+  /** The consumer's grants from the API, to show how each limit is made up (#343). */
+  resourceGrants?: ComMiloapisQuotaV1Alpha1ResourceGrant[];
+  grantsError?: boolean;
+  changeLimitFn: (bucket: GqlQuotaBucket, target: number) => Promise<void>;
+}
+
+/** Each owner's share of the limit, in the order it was added. */
+function BreakdownLines({ breakdown }: { breakdown: QuotaBreakdown }) {
+  const byOwner = breakdown.shares.reduce(
+    (acc, share) => acc.set(share.owner, (acc.get(share.owner) ?? 0) + share.amount),
+    new Map<GrantOwner, number>()
+  );
+  return (
+    <div className="flex flex-col gap-0.5">
+      {[...byOwner].map(([owner, amount]) => (
+        <div key={owner} className="flex items-center justify-between gap-3">
+          <Text size="sm" textColor="muted">
+            <GrantOwnerLabel owner={owner} />
+          </Text>
+          <Text size="sm" className="tabular-nums">
+            {amount}
+          </Text>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 interface QuotaTableRow extends QuotaRow {
@@ -45,9 +70,17 @@ function barColor(percentage: number, total: number) {
   return 'bg-destructive';
 }
 
-export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: QuotaBucketListProps) {
+export function QuotaBucketList({
+  queryKeyPrefix,
+  fetchFn,
+  resourceGrants,
+  grantsError,
+  changeLimitFn,
+}: QuotaBucketListProps) {
   const { t } = useLingui();
+  // Kept after closing so the dialog doesn't re-render empty while it fades out.
   const [selected, setSelected] = useState<GqlQuotaBucket | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   const tableQuery = useQuery({
     queryKey: [...queryKeyPrefix, 'list'],
@@ -149,42 +182,51 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
     {
       label: t`Edit Quota`,
       icon: <ACTION_ICONS.edit className="size-4" />,
-      onClick: (row) => setSelected(row.bucket),
+      onClick: (row) => {
+        setSelected(row.bucket);
+        setEditOpen(true);
+      },
     },
   ];
 
-  const currentLimit = selected?.limit ?? 0;
-  const increaseSchema = z.object({
+  const breakdown =
+    selected && resourceGrants ? quotaBreakdown(resourceGrants, selected.resourceType) : undefined;
+  // The grants are the source of the limit, and the bucket can lag behind them
+  // for a few seconds after a change.
+  const currentLimit = breakdown?.total ?? selected?.limit ?? 0;
+  // The lowest this dialog can set: only staff-added grants can be removed here.
+  const floor = breakdown ? currentLimit - breakdown.staffAdded : currentLimit;
+  const editSchema = z.object({
     newLimit: z.coerce
       .number()
       .int()
-      .min(currentLimit + 1, `New limit must be > ${currentLimit}`),
+      .min(0)
+      .refine((value) => value !== currentLimit, t`Enter a different limit`)
+      .refine(
+        (value) => value >= floor,
+        floor === currentLimit
+          ? t`This quota can only be raised here`
+          : t`Can't go below ${floor} here`
+      ),
   });
 
   return (
     <>
       <DialogForm
-        open={!!selected}
-        onOpenChange={() => setSelected(null)}
+        open={editOpen}
+        onOpenChange={setEditOpen}
         title={t`Edit Quota`}
         submitText={t`Update`}
         cancelText={t`Cancel`}
         onSubmit={async (formData) => {
-          const amount = Math.max(0, formData.newLimit - currentLimit);
-          await createGrantFn(selected?.namespace ?? '', {
-            consumerRef: {
-              apiGroup: selected?.consumerApiGroup ?? '',
-              kind: selected?.consumerKind as 'Organization' | 'Project',
-              name: selected?.consumerName ?? '',
-            },
-            allowances: [{ resourceType: selected?.resourceType ?? '', buckets: [{ amount }] }],
-          });
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+          if (!selected) return;
+          // Errors show their own toast and keep the dialog open.
+          await changeLimitFn(selected, formData.newLimit);
           toast.success(t`Quota updated successfully`);
         }}
-        schema={increaseSchema}
-        defaultValues={{ newLimit: 0 }}>
-        <div className="flex flex-col gap-1">
+        schema={editSchema}
+        defaultValues={{ newLimit: currentLimit }}>
+        <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <Text className="text-muted-foreground">{t`Resource Type:`}</Text>
             <Text>{selected?.resourceType}</Text>
@@ -192,10 +234,29 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
           <div className="flex items-center gap-2">
             <Text className="text-muted-foreground">{t`Limit:`}</Text>
             <Text>{currentLimit}</Text>
+            <Text size="sm" textColor="muted">
+              {t`(${selected?.allocated ?? 0} in use)`}
+            </Text>
           </div>
+          {breakdown ? (
+            <div className="bg-muted/40 flex flex-col gap-1.5 rounded-md p-3">
+              <BreakdownLines breakdown={breakdown} />
+              <Text size="sm" textColor="muted">
+                {breakdown.staffAdded > 0
+                  ? t`You can lower this to ${floor}. The rest comes from the platform or GitOps.`
+                  : t`This can only be raised. None of it was added by staff.`}
+              </Text>
+            </div>
+          ) : (
+            <Text size="sm" textColor="muted">
+              {grantsError
+                ? t`Couldn't load this quota's grants, so it can only be raised.`
+                : t`Checking which grants can be lowered…`}
+            </Text>
+          )}
         </div>
         <Form.Field name="newLimit" label={t`New Limit`} required>
-          <Form.Input />
+          <Form.Input type="number" min={0} />
         </Form.Field>
       </DialogForm>
 

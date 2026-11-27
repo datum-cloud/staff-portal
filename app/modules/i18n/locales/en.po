@@ -33,6 +33,11 @@ msgstr " The draft keeps the rest until they're all added."
 msgid ", list {listRate}"
 msgstr ", list {listRate}"
 
+#. placeholder {0}: selected?.allocated ?? 0
+#: app/features/quota/components/quota-bucket-list.tsx:238
+msgid "({0} in use)"
+msgstr "({0} in use)"
+
 #: app/features/project/components/project-billing-card.tsx:69
 msgid "(cross-org)"
 msgstr "(cross-org)"
@@ -685,7 +690,7 @@ msgstr "# of Sources"
 msgid "% off"
 msgstr "% off"
 
-#: app/features/quota/components/quota-bucket-list.tsx:124
+#: app/features/quota/components/quota-bucket-list.tsx:157
 msgid "% Used"
 msgstr "% Used"
 
@@ -1088,6 +1093,14 @@ msgstr "Added"
 msgid "Added by"
 msgstr "Added by"
 
+#: app/features/quota/components/grant-owner-label.tsx:12
+msgid "Added by staff"
+msgstr "Added by staff"
+
+#: app/features/quota/components/grant-owner-label.tsx:14
+msgid "Added by staff, shared"
+msgstr "Added by staff, shared"
+
 #. placeholder {0}: event.group
 #: app/features/contact/components/timeline/timeline-item.tsx:75
 msgid "Added to contact group “{0}”"
@@ -1217,7 +1230,7 @@ msgstr "All verified"
 msgid "All write operations"
 msgstr "All write operations"
 
-#: app/features/quota/components/quota-grant-list.tsx:98
+#: app/features/quota/components/quota-grant-list.tsx:137
 msgid "Allocation"
 msgstr "Allocation"
 
@@ -1403,7 +1416,7 @@ msgid "Are you sure you want to delete contact group \"{0}\"? This action cannot
 msgstr "Are you sure you want to delete contact group \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: selectedGrant?.name
-#: app/features/quota/components/quota-grant-list.tsx:160
+#: app/features/quota/components/quota-grant-list.tsx:199
 msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 
@@ -1715,6 +1728,10 @@ msgstr "Can't be changed once the contract is saved."
 msgid "Can't be removed"
 msgstr "Can't be removed"
 
+#: app/features/quota/components/quota-bucket-list.tsx:209
+msgid "Can't go below {floor} here"
+msgstr "Can't go below {floor} here"
+
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:43
 #: app/features/billing/components/application-review.tsx:601
@@ -1735,8 +1752,8 @@ msgstr "Can't be removed"
 #: app/features/group/group-dialogs.tsx:71
 #: app/features/group/group-dialogs.tsx:126
 #: app/features/project/components/project-suspension-card.tsx:85
-#: app/features/quota/components/quota-bucket-list.tsx:171
-#: app/features/quota/components/quota-grant-list.tsx:162
+#: app/features/quota/components/quota-bucket-list.tsx:220
+#: app/features/quota/components/quota-grant-list.tsx:201
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
 #: app/features/user/components/user-identity-card.tsx:296
 #: app/features/user/components/user-recovery-link-dialog.tsx:59
@@ -1928,6 +1945,10 @@ msgstr "Checked <0/>"
 #: app/features/organization/components/org-health-strip.tsx:199
 msgid "Checking every project…"
 msgstr "Checking every project…"
+
+#: app/features/quota/components/quota-bucket-list.tsx:254
+msgid "Checking which grants can be lowered…"
+msgstr "Checking which grants can be lowered…"
 
 #: app/features/organization/components/org-health-strip.tsx:122
 msgid "Checking…"
@@ -2395,6 +2416,11 @@ msgstr "Couldn't load the organization's billing accounts"
 msgid "Couldn't load the organization's projects"
 msgstr "Couldn't load the organization's projects"
 
+#: app/features/quota/components/quota-bucket-list.tsx:253
+#: app/features/quota/hooks/use-quota-limit-change.ts:53
+msgid "Couldn't load this quota's grants, so it can only be raised."
+msgstr "Couldn't load this quota's grants, so it can only be raised."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:90
 msgid "Couldn't load usage"
 msgstr "Couldn't load usage"
@@ -2500,7 +2526,7 @@ msgstr "created"
 #: app/features/fraud/policy/policy-detail.tsx:370
 #: app/features/organization/components/org-details-card.tsx:63
 #: app/features/project/components/project-details-card.tsx:52
-#: app/features/quota/components/quota-grant-list.tsx:129
+#: app/features/quota/components/quota-grant-list.tsx:168
 #: app/features/user/components/user-identity-card.tsx:262
 #: app/routes/admin/group/detail/index.tsx:62
 #: app/routes/admin/group/detail/member.tsx:127
@@ -2733,8 +2759,8 @@ msgstr "Degraded"
 #: app/features/contact/components/contact-list.tsx:63
 #: app/features/contact/components/contact-list.tsx:134
 #: app/features/fraud/policy/policy-detail.tsx:325
-#: app/features/quota/components/quota-grant-list.tsx:140
-#: app/features/quota/components/quota-grant-list.tsx:161
+#: app/features/quota/components/quota-grant-list.tsx:179
+#: app/features/quota/components/quota-grant-list.tsx:200
 #: app/routes/admin/group/detail/member.tsx:89
 #: app/routes/admin/group/detail/member.tsx:161
 #: app/routes/customer/fraud/index.tsx:101
@@ -2809,7 +2835,7 @@ msgstr "Delete contact groups"
 msgid "Delete Evaluation"
 msgstr "Delete Evaluation"
 
-#: app/features/quota/components/quota-grant-list.tsx:159
+#: app/features/quota/components/quota-grant-list.tsx:198
 msgid "Delete Grant"
 msgstr "Delete Grant"
 
@@ -3231,8 +3257,8 @@ msgstr "Edit note"
 msgid "Edit or add"
 msgstr "Edit or add"
 
-#: app/features/quota/components/quota-bucket-list.tsx:150
-#: app/features/quota/components/quota-bucket-list.tsx:169
+#: app/features/quota/components/quota-bucket-list.tsx:183
+#: app/features/quota/components/quota-bucket-list.tsx:218
 msgid "Edit Quota"
 msgstr "Edit Quota"
 
@@ -3392,6 +3418,10 @@ msgstr "Enforcement"
 #: app/features/fraud/policy/policy-form.tsx:153
 msgid "Enforcement Mode"
 msgstr "Enforcement Mode"
+
+#: app/features/quota/components/quota-bucket-list.tsx:204
+msgid "Enter a different limit"
+msgstr "Enter a different limit"
 
 #: app/features/billing/components/contract-editor/price-list-table.tsx:631
 msgid "Enter a price"
@@ -3945,11 +3975,11 @@ msgid "Grafana"
 msgstr "Grafana"
 
 #: app/features/billing/components/payment-terms.tsx:198
-#: app/features/quota/components/quota-grant-list.tsx:87
+#: app/features/quota/components/quota-grant-list.tsx:119
 msgid "Grant"
 msgstr "Grant"
 
-#: app/features/quota/components/quota-grant-list.tsx:169
+#: app/features/quota/components/quota-grant-list.tsx:208
 msgid "Grant deleted successfully"
 msgstr "Grant deleted successfully"
 
@@ -3966,8 +3996,8 @@ msgstr "Grant terms"
 msgid "Grant terms to let this account be billed by invoice."
 msgstr "Grant terms to let this account be billed by invoice."
 
-#: app/routes/customer/organization/detail/quota/grant.tsx:9
-#: app/routes/customer/project/detail/quota/grant.tsx:12
+#: app/routes/customer/organization/detail/quota/grant.tsx:14
+#: app/routes/customer/project/detail/quota/grant.tsx:14
 msgid "Grants"
 msgstr "Grants"
 
@@ -4570,7 +4600,7 @@ msgstr "Lift"
 msgid "Lifted"
 msgstr "Lifted"
 
-#: app/features/quota/components/quota-bucket-list.tsx:193
+#: app/features/quota/components/quota-bucket-list.tsx:235
 msgid "Limit:"
 msgstr "Limit:"
 
@@ -4783,6 +4813,10 @@ msgstr "Manage this user's platform access state"
 #: app/components/app-search/use-app-search.ts:40
 msgid "Manage users"
 msgstr "Manage users"
+
+#: app/features/quota/components/grant-owner-label.tsx:10
+msgid "Managed in GitOps"
+msgstr "Managed in GitOps"
 
 #: app/features/contact-group/components/contact-group-form.tsx:81
 msgid "Manually sync this description with the one in Loops (used for opt-in pages)."
@@ -5054,7 +5088,7 @@ msgstr "New fees take effect on <0/>, the next billing date."
 msgid "New Fraud Evaluation"
 msgstr "New Fraud Evaluation"
 
-#: app/features/quota/components/quota-bucket-list.tsx:197
+#: app/features/quota/components/quota-bucket-list.tsx:258
 msgid "New Limit"
 msgstr "New Limit"
 
@@ -5343,7 +5377,7 @@ msgstr "No fraud providers configured."
 msgid "No grants found to remove for this flag"
 msgstr "No grants found to remove for this flag"
 
-#: app/features/quota/components/quota-grant-list.tsx:193
+#: app/features/quota/components/quota-grant-list.tsx:232
 msgid "No grants found."
 msgstr "No grants found."
 
@@ -5521,7 +5555,7 @@ msgstr "No provider results."
 msgid "No Published configuration. Drafts are not fanned out to billing or quota."
 msgstr "No Published configuration. Drafts are not fanned out to billing or quota."
 
-#: app/features/quota/components/quota-bucket-list.tsx:221
+#: app/features/quota/components/quota-bucket-list.tsx:282
 msgid "No quota buckets found."
 msgstr "No quota buckets found."
 
@@ -6424,6 +6458,7 @@ msgstr "Platform account"
 msgid "Platform attention"
 msgstr "Platform attention"
 
+#: app/features/quota/components/grant-owner-label.tsx:8
 #: app/routes/admin/offer/detail.tsx:367
 msgid "Platform default"
 msgstr "Platform default"
@@ -6799,7 +6834,7 @@ msgstr "Quota buckets will appear here once resources are granted."
 msgid "Quota hot spots"
 msgstr "Quota hot spots"
 
-#: app/features/quota/components/quota-bucket-list.tsx:183
+#: app/features/quota/components/quota-bucket-list.tsx:225
 msgid "Quota updated successfully"
 msgstr "Quota updated successfully"
 
@@ -7018,8 +7053,8 @@ msgid "Reset"
 msgstr "Reset"
 
 #: app/features/contact/components/contact-about-card.tsx:39
-#: app/features/quota/components/quota-bucket-list.tsx:85
-#: app/features/quota/components/quota-grant-list.tsx:69
+#: app/features/quota/components/quota-bucket-list.tsx:118
+#: app/features/quota/components/quota-grant-list.tsx:101
 msgid "Resource"
 msgstr "Resource"
 
@@ -7038,7 +7073,7 @@ msgstr "Resource Name"
 msgid "Resource Type"
 msgstr "Resource Type"
 
-#: app/features/quota/components/quota-bucket-list.tsx:189
+#: app/features/quota/components/quota-bucket-list.tsx:231
 msgid "Resource Type:"
 msgstr "Resource Type:"
 
@@ -7306,7 +7341,7 @@ msgstr "Search export policies..."
 msgid "Search for an existing contact by email..."
 msgstr "Search for an existing contact by email..."
 
-#: app/features/quota/components/quota-grant-list.tsx:181
+#: app/features/quota/components/quota-grant-list.tsx:220
 msgid "Search grants..."
 msgstr "Search grants..."
 
@@ -7373,7 +7408,7 @@ msgstr "Search projects..."
 msgid "Search providers..."
 msgstr "Search providers..."
 
-#: app/features/quota/components/quota-bucket-list.tsx:210
+#: app/features/quota/components/quota-bucket-list.tsx:271
 msgid "Search quotas..."
 msgstr "Search quotas..."
 
@@ -7902,7 +7937,7 @@ msgstr "State or region is too long (128 characters max)"
 #: app/features/organization/components/org-needs-attention.tsx:250
 #: app/features/project/components/project-billing-card.tsx:62
 #: app/features/project/components/project-details-card.tsx:39
-#: app/features/quota/components/quota-grant-list.tsx:109
+#: app/features/quota/components/quota-grant-list.tsx:148
 #: app/features/service-catalog/components/conditions-card.tsx:27
 #: app/routes/admin/group/detail/index.tsx:55
 #: app/routes/admin/offer/detail.tsx:354
@@ -8362,6 +8397,10 @@ msgstr "This Application Load Balancer has advanced configuration that cannot be
 msgid "This billing period"
 msgstr "This billing period"
 
+#: app/features/quota/components/quota-bucket-list.tsx:247
+msgid "This can only be raised. None of it was added by staff."
+msgstr "This can only be raised. None of it was added by staff."
+
 #: app/routes/marketing/contact/detail/activity.tsx:91
 msgid "This contact is not linked to a platform user, so there is no activity to show."
 msgstr "This contact is not linked to a platform user, so there is no activity to show."
@@ -8413,6 +8452,15 @@ msgstr "This organization has no billing account, so nothing is billed to it."
 #: app/features/project/components/project-deletion-banner.tsx:22
 msgid "This project is being deleted"
 msgstr "This project is being deleted"
+
+#: app/features/quota/components/quota-bucket-list.tsx:208
+msgid "This quota can only be raised here"
+msgstr "This quota can only be raised here"
+
+#. placeholder {0}: plan.floor
+#: app/features/quota/hooks/use-quota-limit-change.ts:52
+msgid "This quota's grants changed. It can't go below {0} now."
+msgstr "This quota's grants changed. It can't go below {0} now."
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:222
 msgid "This service has no producer project recorded, so consumers cannot be listed."
@@ -8650,7 +8698,7 @@ msgstr "Upcoming invoices"
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:255
 #: app/features/fraud/policy/policy-form.tsx:317
-#: app/features/quota/components/quota-bucket-list.tsx:170
+#: app/features/quota/components/quota-bucket-list.tsx:219
 #: app/routes/customer/fraud/providers/detail.tsx:174
 msgid "Update"
 msgstr "Update"
@@ -8677,10 +8725,10 @@ msgstr "Updating email addresses for GitHub identities"
 #: app/features/billing/components/contract-editor/price-list-table.tsx:742
 #: app/features/organization/components/org-usage-card.tsx:67
 #: app/features/project/components/project-usage-card.tsx:89
-#: app/features/quota/components/quota-bucket-list.tsx:110
+#: app/features/quota/components/quota-bucket-list.tsx:143
 #: app/routes/customer/organization/detail/quota/usage.tsx:9
 #: app/routes/customer/organization/detail/usage/index.tsx:28
-#: app/routes/customer/project/detail/quota/usage.tsx:12
+#: app/routes/customer/project/detail/quota/usage.tsx:9
 msgid "Usage"
 msgstr "Usage"
 
@@ -9056,6 +9104,10 @@ msgstr "Yes"
 #: app/routes/admin/offer/detail.tsx:373
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
+
+#: app/features/quota/components/quota-bucket-list.tsx:246
+msgid "You can lower this to {floor}. The rest comes from the platform or GitOps."
+msgstr "You can lower this to {floor}. The rest comes from the platform or GitOps."
 
 #: app/routes/admin/service-catalog/service-details.tsx:78
 msgid "You do not have permission to view service configurations."
